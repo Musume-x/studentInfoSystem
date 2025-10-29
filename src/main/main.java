@@ -3,6 +3,7 @@ package main;
 import config.config;
 import models.*;
 import java.util.*;
+import utils.PasswordUtil; // ✅ import the hasher
 
 public class main {
 
@@ -21,35 +22,51 @@ public class main {
             int choice = sc.nextInt();
 
             switch (choice) {
-                case 1: // Register user
-                    System.out.print("Enter name: ");
+                case 1: {
+                    // ✅ Register user with password hashing
                     sc.nextLine();
+                    System.out.print("Enter name: ");
                     String name = sc.nextLine();
                     System.out.print("Enter email: ");
                     String email = sc.nextLine();
                     System.out.print("Enter password: ");
                     String pass = sc.nextLine();
+
+                    // Hash the password before saving
+                    String hashedPass = PasswordUtil.hashPassword(pass);
+
                     System.out.print("Enter type (Admin/Teacher/Student): ");
                     String type = sc.nextLine();
-                    User.registerUser(db, name, email, pass, type);
-                    break;
 
-                case 2: // Login
-                    System.out.print("Enter email: ");
+                    User.registerUser(db, name, email, hashedPass, type);
+                    break;
+                }
+
+                case 2: {
+                    // ✅ Login using hashed password check
                     sc.nextLine();
+                    System.out.print("Enter email: ");
                     String em = sc.nextLine();
                     System.out.print("Enter password: ");
                     String pw = sc.nextLine();
-                    User.loginUser(db, sc, em, pw);
-                    break;
 
-                case 0:
+                    // Hash the entered password before comparing
+                    String hashedPw = PasswordUtil.hashPassword(pw);
+
+                    User.loginUser(db, sc, em, hashedPw);
+                    break;
+                }
+
+                case 0: {
                     System.out.println("Exiting program... Goodbye!");
                     System.exit(0);
                     break;
+                }
 
-                default:
+                default: {
                     System.out.println("Invalid choice!");
+                    break;
+                }
             }
 
             System.out.print("\nDo you want to continue? (Y/N): ");
